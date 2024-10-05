@@ -26,12 +26,12 @@ def bomberman_portrayal(agent):
     if isinstance(agent, Bomberman):  
         portrayal["Shape"] = "images/bomberman.png"  
         portrayal["scale"] = 1  
-        portrayal["Layer"] = 2
+        portrayal["Layer"] = 2  # Capa para Bomberman
 
     elif isinstance(agent, Block):
         portrayal["Shape"] = "images/block.png"
         portrayal["scale"] = 1  
-        portrayal["Layer"] = 1  
+        portrayal["Layer"] = 1  # Capa para bloques
         if agent.has_exit:
             portrayal["text"] = "SALIDA"
             portrayal["text_color"] = "white" 
@@ -39,7 +39,7 @@ def bomberman_portrayal(agent):
     elif isinstance(agent, Road):  
         portrayal["Shape"] = "images/path.png"  
         portrayal["scale"] = 1
-        portrayal["Layer"] = 0 
+        portrayal["Layer"] = 0  # Capa para caminos
         
         # Si la celda está marcada con un número de búsqueda, lo mostramos
         if hasattr(agent, 'step_counter'):
@@ -49,10 +49,9 @@ def bomberman_portrayal(agent):
     elif isinstance(agent, Metal):
         portrayal["Shape"] = "images/metal.png"
         portrayal["scale"] = 1
-        portrayal["Layer"] = 0
+        portrayal["Layer"] = 0  # Capa para metal
 
     return portrayal
-
 
 # Crear la cuadrícula de visualización
 def run_interface(width, high, map):
