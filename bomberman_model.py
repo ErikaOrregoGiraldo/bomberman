@@ -31,10 +31,10 @@ class BombermanModel(Model):
                     self.schedule.add(bloque)
 
                 elif cell == "R_s":
-                        rock = Block(unique_id_counter, (x, y), self, has_exit=True)
-                        unique_id_counter += 1
-                        self.grid.place_agent(rock, (x, y))
-                        self.schedule.add(rock)
+                    rock = Block(unique_id_counter, (x, y), self, has_exit=True)
+                    unique_id_counter += 1
+                    self.grid.place_agent(rock, (x, y))
+                    self.schedule.add(rock)
 
                 elif cell == 'M':
                     metal = Metal(unique_id_counter, (x, y), self)
