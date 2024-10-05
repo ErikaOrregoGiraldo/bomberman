@@ -8,8 +8,8 @@ from models.metal import Metal
 from models.road import Road
 
 class BombermanModel(Model):
-    
     def __init__(self, width, high, map):
+        super().__init__()
         self.grid = MultiGrid(width, high, True)
         self.schedule = SimultaneousActivation(self)
         unique_id_counter = 0  
@@ -40,3 +40,6 @@ class BombermanModel(Model):
                     unique_id_counter += 1
                     self.grid.place_agent(metal, (x, y))
                     self.schedule.add(metal)
+    
+    def setp(self):
+        self.schedule.step()

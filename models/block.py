@@ -1,6 +1,5 @@
 from mesa import Agent
 
-
 class Block(Agent):
     """Un agente que representa un bloque en el juego."""
 

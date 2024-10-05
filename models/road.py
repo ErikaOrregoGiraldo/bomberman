@@ -1,6 +1,5 @@
 from mesa import Agent
 
-
 class Road(Agent):
     """Un agente que representa un camino en el juego."""
     
