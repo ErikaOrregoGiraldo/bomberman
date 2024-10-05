@@ -1,25 +1,25 @@
 from mesa import Agent, Model
-from mesa.time import SimultaneousActivation
+from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 
 from models.block import Block
 from models.bomberman import Bomberman
 from models.metal import Metal
-from models.road import Road
 
 class BombermanModel(Model):
-    def __init__(self, width, high, map):
+    def __init__(self, width, high, map_file, algorithm="BFS"):
         super().__init__()
         self.grid = MultiGrid(width, high, True)
-        self.schedule = SimultaneousActivation(self)
+        self.schedule = RandomActivation(self)
+        self.algorithm = algorithm
         unique_id_counter = 0  
         self.visited_numbers = {}
 
         # Crear el mapa y colocar los agentes correspondientes
-        for y, row in enumerate(map):
+        for y, row in enumerate(reversed(map_file)):
             for x, cell in enumerate(row):
                 if cell == 'C_b':
-                    bomberman = Bomberman(unique_id_counter, (x, y), self)
+                    bomberman = Bomberman(unique_id_counter, (x, y), self, self.algorithm)
                     unique_id_counter += 1
                     self.grid.place_agent(bomberman, (x, y))
                     self.schedule.add(bomberman)
@@ -32,14 +32,9 @@ class BombermanModel(Model):
 
                 elif cell == "R_s":
                         rock = Block(unique_id_counter, (x, y), self, has_exit=True)
+                        unique_id_counter += 1
                         self.grid.place_agent(rock, (x, y))
                         self.schedule.add(rock)
-
-                elif cell == 'C':
-                    road = Road(unique_id_counter, (x, y), self)
-                    unique_id_counter += 1
-                    self.grid.place_agent(road, (x, y))
-                    self.schedule.add(road)
 
                 elif cell == 'M':
                     metal = Metal(unique_id_counter, (x, y), self)
