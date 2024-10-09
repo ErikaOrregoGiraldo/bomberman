@@ -36,16 +36,6 @@ def bomberman_portrayal(agent):
             portrayal["text"] = "SALIDA"
             portrayal["text_color"] = "white" 
 
-    # elif isinstance(agent, Road):  
-    #     portrayal["Shape"] = "images/path.png"  
-    #     portrayal["scale"] = 1
-    #     portrayal["Layer"] = 0  # Capa para caminos
-        
-        # Si la celda está marcada con un número de búsqueda, lo mostramos
-        # if hasattr(agent, 'step_counter'):
-        #     portrayal["text"] = str(agent.step_counter)
-        #     portrayal["text_color"] = "Black"  # Elige un color adecuado
-
     elif isinstance(agent, Metal):
         portrayal["Shape"] = "images/metal.png"
         portrayal["scale"] = 1
