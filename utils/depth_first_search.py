@@ -21,7 +21,7 @@ def depth_first_search(start, goal, model):
         
         # Obtener vecinos en el orden ortogonal: arriba, derecha, abajo, izquierda
         neighbors = get_neighbors_in_orthogonal_order(current, model)
-        for neighbor in neighbors:
+        for neighbor in reversed(neighbors):
             if neighbor not in visited and model.grid.is_cell_empty(neighbor):
                 visited.add(neighbor)
                 stack.append(neighbor)
@@ -48,10 +48,10 @@ def get_neighbors_in_orthogonal_order(pos, model):
     x, y = pos
     # Orden ortogonal: arriba, derecha, abajo, izquierda
     neighbors = [
+        (x - 1, y),   # Izquierda
         (x, y + 1),  # Arriba
         (x + 1, y),  # Derecha
         (x, y - 1),  # Abajo
-        (x - 1, y)   # Izquierda
     ]
     # Filtrar los vecinos válidos que están dentro de los límites del mapa y son caminos
     valid_neighbors = [n for n in neighbors if model.grid.out_of_bounds(n) == False]
