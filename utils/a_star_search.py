@@ -1,6 +1,7 @@
+import math
 from heapq import heappush, heappop
 
-def a_star_search(start, goal, model):
+def a_star_search(start, goal, model, heuristic_name):
     # Usamos una cola de prioridad (heap) para manejar los costos y la heurística
     queue = []
     heappush(queue, (0, 0, start))  # (costo acumulado + heurística, prioridad de desempate, nodo)
@@ -11,7 +12,9 @@ def a_star_search(start, goal, model):
     # Contador para las casillas analizadas
     step_counter = 1
     priority_counter = 0  # Para desempatar cuando las prioridades sean iguales
-
+    
+    heuristic = manhattan_distance if heuristic_name == 'Manhattan' else euclidean_distance
+    
     while queue:
         # Atender el nodo con la menor prioridad (costo acumulado + heurística)
         _, _, current_node = heappop(queue)
@@ -42,7 +45,14 @@ def a_star_search(start, goal, model):
 
     return None  # Si no se encuentra un camino
 
-def heuristic(pos1, pos2):
+
+def euclidean_distance(pos1, pos2):
+    """Calcula la distancia euclideana entre dos puntos."""
+    x1, y1 = pos1
+    x2, y2 = pos2
+    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+
+def manhattan_distance(pos1, pos2):
     """Calcula la distancia Manhattan entre dos puntos."""
     x1, y1 = pos1
     x2, y2 = pos2

@@ -48,13 +48,14 @@ def run_interface(width, high, map_file):
     grid = CanvasGrid(bomberman_portrayal, width, high, width * 70, high * 70)
 
     # Dropdown menu to choose the algorithm
-    algorithm_choice = Choice("Algoritmo de búsqueda", value="BFS", choices=["BFS", "DFS", "UCS"])
+    algorithm_choice = Choice("Algoritmo de búsqueda", value="BFS", choices=["BFS", "DFS", "UCS", "A*"])
+    heuristic_choice = Choice("Heurística", value="Euclidean", choices=["Euclidean", "Manhattan"])
 
     server = ModularServer(
-        BombermanModel, 
-        [grid], 
+        BombermanModel,
+        [grid],
         "Bomberman", 
-        {"width": width, "high": high, "map_file": map_file, "algorithm": algorithm_choice}
+        {"width": width, "high": high, "map_file": map_file, "algorithm": algorithm_choice, "heuristic": heuristic_choice}
     )
     server.port = 8521
     server.launch()
