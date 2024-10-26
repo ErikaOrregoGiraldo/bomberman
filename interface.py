@@ -1,10 +1,12 @@
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.UserParam import Choice, UserParam
 from mesa.visualization.ModularVisualization import ModularServer
-from bomberman_model import BombermanModel, NumberMarker
+from bomberman_model import BombermanModel
 from models.block import Block
 from models.bomberman import Bomberman
+from models.globe import Globe
 from models.metal import Metal
+from models.number_marker import NumberMarker
 
 def bomberman_portrayal(agent):
     portrayal = {"Shape": "rect", "Filled": "true", "Layer": 0}
@@ -40,6 +42,9 @@ def bomberman_portrayal(agent):
         portrayal["Shape"] = "images/metal.png"
         portrayal["scale"] = 1
         portrayal["Layer"] = 0  # Capa para metal
+
+    elif isinstance(agent, Globe):
+        portrayal["Shape"] = "images/globe.png"
 
     return portrayal
 
