@@ -18,36 +18,40 @@ class Bomberman(Agent):
         self.heuristic = heuristic
         self.power = 1  # Poder de destrucción inicial de la bomba
         self.exit_found = False  # Bandera para rastrear si Bomberman encontró la salida
+        self.exit_position = self.find_initial_exit_position()  # Guardar la posición de la salida al inicio
 
     def move(self):
-        # Encontrar la posición de la salida
-        exit_position = self.find_exit_position()
-        
-        # Verificar si Bomberman está adyacente a la roca con la salida
-        if exit_position and self.is_adjacent(exit_position) and not self.exit_found:
-            self.place_bomb()  # Coloca una bomba para destruir la roca de salida
-            self.exit_found = True  # Marcar que encontró la salida y colocó la bomba
-            self.move_to_safe_position()
-            return  # Detener el movimiento en esta iteración para esperar la explosión
-
-        # Si la salida está libre y Bomberman ha encontrado la salida, moverse allí
-        if self.exit_found and not self.is_block_present(exit_position):
-            self.model.grid.move_agent(self, exit_position)
+        # Verificar si la salida está libre y moverse a ella
+        if self.exit_found and self.exit_position and self.is_path_clear(self.exit_position):
+            self.model.grid.move_agent(self, self.exit_position)
             print("¡Bomberman ha alcanzado la salida!")
             self.model.finish_game()
             return
 
-        # Si no se ha encontrado la salida, seguir el camino normalmente
-        if exit_position and not self.path:
-            self.calculate_path(exit_position)
+        # Si Bomberman está adyacente a la roca de la salida y aún no ha colocado una bomba
+        if self.exit_position and self.is_adjacent(self.exit_position) and not self.exit_found:
+            self.place_bomb()
+            self.exit_found = True  # Marcar que Bomberman ha encontrado la salida y colocado la bomba
+            self.move_to_safe_position()
+            return
 
-        # Revisar si el siguiente paso está bloqueado por un bloque y colocar bomba
+        # Si aún no se ha encontrado la salida, seguir el camino normalmente
+        if self.exit_position and not self.path:
+            self.calculate_path(self.exit_position)
+
+        # Si el siguiente paso está bloqueado por un bloque, coloca una bomba
         if self.is_block_in_the_way():
             self.place_bomb()
             self.move_to_safe_position()
         else:
-            # Mover a Bomberman a la siguiente posición del camino si no hay bloque
             self.follow_path()
+
+    def find_initial_exit_position(self):
+        """Encuentra y guarda la posición inicial de la roca con la salida."""
+        for agent in self.model.schedule.agents:
+            if isinstance(agent, Block) and agent.has_exit:
+                return agent.pos
+        return None
 
     def is_adjacent(self, position):
         """Comprueba si Bomberman está en una posición adyacente a la dada."""
@@ -55,10 +59,10 @@ class Bomberman(Agent):
         px, py = position
         return abs(px - x) + abs(py - y) == 1
 
-    def is_block_present(self, position):
-        """Verifica si hay un bloque en la posición dada."""
+    def is_path_clear(self, position):
+        """Verifica si la posición está libre para moverse a la salida."""
         cell_contents = self.model.grid.get_cell_list_contents(position)
-        return any(isinstance(obj, Block) for obj in cell_contents)
+        return not any(isinstance(obj, Block) for obj in cell_contents)
 
     def is_block_in_the_way(self):
         """Verifica si el siguiente paso está bloqueado por un bloque."""
@@ -70,7 +74,7 @@ class Bomberman(Agent):
 
     def place_bomb(self):
         """Coloca una bomba en la posición actual."""
-        from models.bomb import Bomb  # Importación dentro del método para evitar el ciclo
+        from models.bomb import Bomb
         bomb = Bomb(self.model.next_id(), self.pos, self.model, self.power)
         self.model.grid.place_agent(bomb, self.pos)
         self.model.schedule.add(bomb)
@@ -116,13 +120,6 @@ class Bomberman(Agent):
         if self.path:
             next_position = self.path.pop(0)
             self.model.grid.move_agent(self, next_position)
-
-    def find_exit_position(self):
-        """Encuentra la roca con la salida."""
-        for agent in self.model.schedule.agents:
-            if isinstance(agent, Block) and agent.has_exit:
-                return agent.pos
-        return None
 
     def step(self):
         self.move()
