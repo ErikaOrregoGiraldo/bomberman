@@ -1,5 +1,7 @@
 import math
 
+from models.block import Block
+from models.metal import Metal
 
 def is_adjacent(pos1, pos2):
     """Verifica si dos posiciones están una al lado de la otra."""
@@ -40,3 +42,11 @@ def manhattan_distance(pos1, pos2):
     x1, y1 = pos1
     x2, y2 = pos2
     return abs(x1 - x2) + abs(y1 - y2)
+
+def is_valid_move(pos, model):
+    cell_contents = model.grid.get_cell_list_contents(pos)
+    for obj in cell_contents:
+        if isinstance(obj, Block) or isinstance(obj, Metal):
+            return False 
+    
+    return True  

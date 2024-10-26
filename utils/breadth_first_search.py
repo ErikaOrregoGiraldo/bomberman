@@ -1,5 +1,5 @@
 from collections import deque
-from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path
+from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, is_valid_move
 
 def breadth_first_search(start, goal, model):
     queue = deque([start])
@@ -22,7 +22,7 @@ def breadth_first_search(start, goal, model):
 
         neighbors = get_neighbors_in_orthogonal_order(current, model)
         for neighbor in neighbors:
-            if neighbor not in visited and model.grid.is_cell_empty(neighbor):
+            if neighbor not in visited and is_valid_move(neighbor, model):
                 visited.add(neighbor)
                 queue.append(neighbor)
                 came_from[neighbor] = current

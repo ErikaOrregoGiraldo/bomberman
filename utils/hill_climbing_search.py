@@ -1,4 +1,4 @@
-from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, manhattan_distance, euclidean_distance
+from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, manhattan_distance, euclidean_distance, is_valid_move
 
 
 def hill_climbing_search(start, goal, model, heuristic_name):
@@ -25,7 +25,7 @@ def hill_climbing_search(start, goal, model, heuristic_name):
         min_heuristic = float('inf')
 
         for neighbor in neighbors:
-            if neighbor not in visited and model.grid.is_cell_empty(neighbor):
+            if neighbor not in visited and is_valid_move(neighbor, model):
                 h = heuristic(neighbor, goal)
                 if h < min_heuristic:
                     min_heuristic = h

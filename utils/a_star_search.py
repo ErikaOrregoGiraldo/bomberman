@@ -1,6 +1,6 @@
 from heapq import heappush, heappop
 
-from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, manhattan_distance, euclidean_distance
+from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, manhattan_distance, euclidean_distance, is_valid_move
 
 
 def a_star_search(start, goal, model, heuristic_name):
@@ -35,7 +35,7 @@ def a_star_search(start, goal, model, heuristic_name):
         # Obtener vecinos en el orden ortogonal: arriba, derecha, abajo, izquierda
         neighbors = get_neighbors_in_orthogonal_order(current_node, model)
         for neighbor in neighbors:
-            if neighbor not in visited and model.grid.is_cell_empty(neighbor):
+            if neighbor not in visited and is_valid_move(neighbor, model):
                 new_cost = cost_so_far[current_node] + 1  # Asumimos que el costo de moverse es 1
                 
                 if neighbor not in cost_so_far or new_cost < cost_so_far[neighbor]:

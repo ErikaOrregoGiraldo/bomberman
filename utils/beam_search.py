@@ -1,4 +1,4 @@
-from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, manhattan_distance, euclidean_distance
+from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, manhattan_distance, euclidean_distance, is_valid_move
 
 def recursive_beam_search(current_level, goal, model, heuristic, beam_width, visited, came_from, step_counter):
     # Base case: if any node in the current level is adjacent to the goal
@@ -18,7 +18,7 @@ def recursive_beam_search(current_level, goal, model, heuristic, beam_width, vis
         # Expand neighbors and calculate their heuristic
         neighbors = get_neighbors_in_orthogonal_order(current_node, model)
         for neighbor in neighbors:
-            if neighbor not in visited and model.grid.is_cell_empty(neighbor):
+            if neighbor not in visited and is_valid_move(neighbor, model):
                 priority_counter += 1
                 priority = heuristic(neighbor, goal)
                 next_level.append((priority, neighbor))

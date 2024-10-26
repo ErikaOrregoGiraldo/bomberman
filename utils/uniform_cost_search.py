@@ -1,5 +1,5 @@
 from heapq import heappush, heappop
-from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path
+from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, is_valid_move
 
 
 def uniform_cost_search(start, goal, model):
@@ -31,7 +31,7 @@ def uniform_cost_search(start, goal, model):
         # Obtener vecinos en el orden ortogonal: arriba, derecha, abajo, izquierda
         neighbors = get_neighbors_in_orthogonal_order(current_node, model)
         for neighbor in neighbors:
-            if neighbor not in visited and model.grid.is_cell_empty(neighbor):
+            if neighbor not in visited and is_valid_move(neighbor, model):
                 new_cost = current_cost + 1  # Asumimos que el costo de moverse es 1
                 priority_counter += 1  # Incrementar la prioridad para respetar el orden de inserción
                 heappush(queue, (new_cost, priority_counter, neighbor))
