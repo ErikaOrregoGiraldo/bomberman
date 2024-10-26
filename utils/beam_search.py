@@ -1,4 +1,4 @@
-import math
+from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, manhattan_distance, euclidean_distance
 
 def recursive_beam_search(current_level, goal, model, heuristic, beam_width, visited, came_from, step_counter):
     # Base case: if any node in the current level is adjacent to the goal
@@ -42,37 +42,3 @@ def beam_search(start, goal, model, heuristic_name, beam_width):
 
     # Initial call to recursive Beam Search
     return recursive_beam_search([(initial_priority, start)], goal, model, heuristic, beam_width, visited, came_from, step_counter=1)
-
-# Auxiliary functions (euclidean_distance, manhattan_distance, is_adjacent, reconstruct_path, get_neighbors_in_orthogonal_order)
-def euclidean_distance(pos1, pos2):
-    x1, y1 = pos1
-    x2, y2 = pos2
-    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-
-def manhattan_distance(pos1, pos2):
-    x1, y1 = pos1
-    x2, y2 = pos2
-    return abs(x1 - x2) + abs(y1 - y2)
-
-def is_adjacent(pos1, pos2):
-    x1, y1 = pos1
-    x2, y2 = pos2
-    return abs(x1 - x2) + abs(y1 - y2) == 1
-
-def reconstruct_path(came_from, current):
-    path = []
-    while current:
-        path.append(current)
-        current = came_from[current]
-    path.reverse()
-    return path
-
-def get_neighbors_in_orthogonal_order(pos, model):
-    x, y = pos
-    neighbors = [
-        (x - 1, y),   # Left
-        (x, y + 1),   # Up
-        (x + 1, y),   # Right
-        (x, y - 1),   # Down
-    ]
-    return [n for n in neighbors if not model.grid.out_of_bounds(n)]
