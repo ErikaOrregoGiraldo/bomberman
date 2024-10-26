@@ -3,15 +3,17 @@ from models.block import Block
 from utils.breadth_first_search import breadth_first_search
 from utils.depth_first_search import depth_first_search
 from utils.uniform_cost_search import uniform_cost_search
+from utils.a_star_search import a_star_search
 
 class Bomberman(Agent):
     """Un agente que representa al Bomberman en el juego."""
     
-    def __init__(self, unique_id, pos, model, algorithm):
+    def __init__(self, unique_id, pos, model, algorithm, heuristic):
         super().__init__(unique_id, model)
         self.pos = pos 
         self.path = []  # Aquí guardaremos el camino hacia la salida
         self.algorithm = algorithm
+        self.heuristic = heuristic
 
     def move(self):
         # Encontrar la posición de la salida
@@ -26,6 +28,9 @@ class Bomberman(Agent):
                     self.path = depth_first_search(self.pos, exit_position, self.model)
                 elif self.algorithm == "UCS":
                     self.path = uniform_cost_search(self.pos, exit_position, self.model)
+                elif self.algorithm == "A*":
+                    self.path = a_star_search(self.pos, exit_position, self.model, self.heuristic)
+
                 print(f"Camino encontrado: {self.path}")
             
             # Mover a Bomberman a la siguiente posición del camino si existe un camino

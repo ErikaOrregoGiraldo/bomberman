@@ -17,7 +17,7 @@ def load_map(map_file):
         return None
 
 if __name__ == "__main__":
-    map = load_map('maps/map3.txt') 
+    map = load_map('maps/map2.txt') 
     width = len(map[0]) 
     high = len(map)     
 
