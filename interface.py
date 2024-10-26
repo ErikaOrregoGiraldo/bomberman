@@ -3,7 +3,10 @@ from mesa.visualization.UserParam import Choice, UserParam
 from mesa.visualization.ModularVisualization import ModularServer
 from bomberman_model import BombermanModel
 from models.block import Block
+from models.bomb import Bomb
 from models.bomberman import Bomberman
+from models.exit_marker import ExitMarker
+from models.fire_marker import FireMarker
 from models.globe import Globe
 from models.metal import Metal
 from models.number_marker import NumberMarker
@@ -45,6 +48,21 @@ def bomberman_portrayal(agent):
 
     elif isinstance(agent, Globe):
         portrayal["Shape"] = "images/globe.png"
+
+    elif isinstance(agent, Bomb):
+        portrayal["Shape"] = "images/bomb.png"
+        portrayal["scale"] = 1
+        portrayal["Layer"] = 3
+
+    elif isinstance(agent, FireMarker):
+        portrayal["Shape"] = "images/fire.png"
+        portrayal["scale"] = 1
+        portrayal["Layer"] = 4  # Capas superiores para el efecto de fuego
+
+    elif isinstance(agent, ExitMarker):
+        portrayal["Shape"] = "images/exit.png"
+        portrayal["scale"] = 1
+        portrayal["Layer"] = 4
 
     return portrayal
 

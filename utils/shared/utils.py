@@ -46,7 +46,7 @@ def manhattan_distance(pos1, pos2):
 def is_valid_move(pos, model):
     cell_contents = model.grid.get_cell_list_contents(pos)
     for obj in cell_contents:
-        if isinstance(obj, Block) or isinstance(obj, Metal):
+        if isinstance(obj, Metal):
             return False 
     
     return True  
