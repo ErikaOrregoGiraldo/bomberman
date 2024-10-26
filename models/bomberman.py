@@ -4,6 +4,8 @@ from utils.breadth_first_search import breadth_first_search
 from utils.depth_first_search import depth_first_search
 from utils.uniform_cost_search import uniform_cost_search
 from utils.a_star_search import a_star_search
+from utils.beam_search import beam_search
+from utils.hill_climbing_search import hill_climbing_search
 
 class Bomberman(Agent):
     """Un agente que representa al Bomberman en el juego."""
@@ -30,6 +32,10 @@ class Bomberman(Agent):
                     self.path = uniform_cost_search(self.pos, exit_position, self.model)
                 elif self.algorithm == "A*":
                     self.path = a_star_search(self.pos, exit_position, self.model, self.heuristic)
+                elif self.algorithm == "Beam Search":
+                    self.path = beam_search(self.pos, exit_position, self.model, self.heuristic, 2)
+                elif self.algorithm == "Hill Climbing":
+                    self.path = hill_climbing_search(self.pos, exit_position, self.model, self.heuristic)
 
                 print(f"Camino encontrado: {self.path}")
             

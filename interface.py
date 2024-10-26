@@ -1,5 +1,5 @@
 from mesa.visualization.modules import CanvasGrid
-from mesa.visualization.UserParam import Choice
+from mesa.visualization.UserParam import Choice, UserParam
 from mesa.visualization.ModularVisualization import ModularServer
 from bomberman_model import BombermanModel, NumberMarker
 from models.block import Block
@@ -48,7 +48,7 @@ def run_interface(width, high, map_file):
     grid = CanvasGrid(bomberman_portrayal, width, high, width * 70, high * 70)
 
     # Dropdown menu to choose the algorithm
-    algorithm_choice = Choice("Algoritmo de búsqueda", value="BFS", choices=["BFS", "DFS", "UCS", "A*"])
+    algorithm_choice = Choice("Algoritmo de búsqueda", value="BFS", choices=["BFS", "DFS", "UCS", "A*", "Beam Search", "Hill Climbing"])
     heuristic_choice = Choice("Heurística", value="Euclidean", choices=["Euclidean", "Manhattan"])
 
     server = ModularServer(
