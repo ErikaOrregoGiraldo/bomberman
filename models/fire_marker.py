@@ -1,7 +1,5 @@
 from mesa import Agent
 
-from models.block import Block
-from models.globe import Globe
 class FireMarker(Agent):
     def __init__(self, unique_id, pos, model):
         super().__init__(unique_id, model)
@@ -9,6 +7,8 @@ class FireMarker(Agent):
         self.life_span = 1  # Duración de la explosión visual
 
     def step(self):
+        from models.block import Block
+        from models.globe import Globe
         # Reducir la duración y eliminar después de un paso
         self.life_span -= 1
         if self.life_span <= 0:

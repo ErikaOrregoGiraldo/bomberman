@@ -1,6 +1,4 @@
 from mesa import Agent
-
-from models.fire_marker import FireMarker
 from models.metal import Metal
 
 class Bomb(Agent):
@@ -19,6 +17,7 @@ class Bomb(Agent):
                 self.explode()
 
     def explode(self):
+        from models.fire_marker import FireMarker
         # Marcar la bomba como explotada
         self.exploded = True
         # Generar las posiciones afectadas por la explosión
