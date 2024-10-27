@@ -12,16 +12,17 @@ class FireMarker(Agent):
         # Reducir la duración y eliminar después de un paso
         self.life_span -= 1
         if self.life_span <= 0:
-            # Eliminar cualquier bloque o globo en la posición del FireMarker
             cell_contents = self.model.grid.get_cell_list_contents(self.pos)
             for obj in cell_contents:
-                if isinstance(obj, Block) and not obj.has_exit:  # Solo eliminar bloques sin salida
+                # Eliminar cualquier bloque, incluyendo el que contiene la salida
+                if isinstance(obj, Block):
                     self.model.grid.remove_agent(obj)
                     print(f"Bloque destruido en {self.pos}, convirtiéndose en camino")
-                elif isinstance(obj, Globe):  # Eliminar globos afectados por la explosión
+                elif isinstance(obj, Globe):
                     self.model.grid.remove_agent(obj)
                     print(f"Globo destruido en {self.pos} por la explosión")
                     
-            # Convertir la posición en camino libre y eliminar el FireMarker
+            # Eliminar el FireMarker después de que cumpla su función
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
+

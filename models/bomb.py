@@ -5,7 +5,7 @@ class Bomb(Agent):
     def __init__(self, unique_id, pos, model, power):
         super().__init__(unique_id, model)
         self.pos = pos
-        self.timer = power + 2  # Tiempo hasta la explosión
+        self.timer = power + 1  # Tiempo hasta la explosión
         self.power = power
         self.exploded = False  # Para controlar si la bomba ha explotado
 
@@ -34,6 +34,7 @@ class Bomb(Agent):
                 if any(isinstance(obj, Metal) for obj in cell_contents):
                     break
 
+        print(f"Explosión en {self.pos} afectando a {explosion_positions} posiciones")
         # Crear un marcador de explosión para cada posición afectada
         for pos in explosion_positions:
             fire_marker = FireMarker(self.model.next_id(), pos, self.model)
