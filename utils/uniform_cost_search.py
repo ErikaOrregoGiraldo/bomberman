@@ -1,40 +1,56 @@
 from heapq import heappush, heappop
-from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, is_valid_move
+from utils.shared.utils import get_neighbors_in_orthogonal_order, reconstruct_path, is_valid_move
+from itertools import count
 
 
 def uniform_cost_search(start, goal, model):
-    # Usamos una cola de prioridad (heap) para manejar los costos
+    """
+    Implementación del algoritmo de búsqueda por costo uniforme (UCS).
+    
+    Args:
+        start (tuple): Posición inicial de Bomberman.
+        goal (tuple): Posición objetivo (normalmente la salida bajo una roca).
+        model (BombermanModel): El modelo de Mesa que contiene el mapa y los agentes.
+    
+    Returns:
+        list: El camino encontrado desde el inicio hasta la meta.
+    """
+    # Inicializar la cola de prioridad con un contador para desempate
     queue = []
-    heappush(queue, (0, 0, start))  # (costo acumulado, prioridad de desempate, nodo)
+    counter = count()  # Generador de contadores
+    heappush(queue, (0, next(counter), start))  # (costo acumulado, contador, nodo)
+    
     visited = set()
     came_from = {start: None}
-    
-    # Contador para las casillas analizadas
-    step_counter = 1
-    priority_counter = 0  # Este contador nos ayudará a desempatar cuando los costos sean iguales
+    step_counter = 0
 
     while queue:
-        # Atender el nodo con el menor costo acumulado
+        # Extraer el nodo con el menor costo acumulado y menor contador
         current_cost, _, current_node = heappop(queue)
         
-        # Si llegamos a la meta, reconstruimos el camino
-        if is_adjacent(current_node, goal):
-            return reconstruct_path(came_from, current_node)
+        # Si el nodo actual ya ha sido visitado, saltarlo
+        if current_node in visited:
+            continue
         
         # Marcar el nodo como visitado
         visited.add(current_node)
-        # Mostrar en el mapa el orden de la casilla analizada
+        
+        # Marcar la casilla con el número de visita
         model.place_agent_number(current_node, step_counter)
         print(f"Casilla {current_node} marcada con el número {step_counter}")  # Imprimir en consola
         step_counter += 1
         
-        # Obtener vecinos en el orden ortogonal: arriba, derecha, abajo, izquierda
+        # Verificar si el nodo actual está adyacente a la meta
+        if current_node == goal:
+            return reconstruct_path(came_from, current_node)
+        
+        # Obtener vecinos en el orden ortogonal: izquierda, arriba, derecha, abajo
         neighbors = get_neighbors_in_orthogonal_order(current_node, model)
+        
         for neighbor in neighbors:
             if neighbor not in visited and is_valid_move(neighbor, model):
                 new_cost = current_cost + 1  # Asumimos que el costo de moverse es 1
-                priority_counter += 1  # Incrementar la prioridad para respetar el orden de inserción
-                heappush(queue, (new_cost, priority_counter, neighbor))
+                heappush(queue, (new_cost, next(counter), neighbor))  # Insertar con contador
                 came_from[neighbor] = current_node
 
     return None  # Si no se encuentra un camino

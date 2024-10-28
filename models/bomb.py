@@ -5,7 +5,7 @@ class Bomb(Agent):
     def __init__(self, unique_id, pos, model, power):
         super().__init__(unique_id, model)
         self.pos = pos
-        self.timer = power + 1  # Tiempo hasta la explosión
+        self.timer = power + 2  # Tiempo hasta la explosión
         self.power = power
         self.exploded = False  # Para controlar si la bomba ha explotado
 

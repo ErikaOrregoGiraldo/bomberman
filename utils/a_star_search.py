@@ -12,7 +12,7 @@ def a_star_search(start, goal, model, heuristic_name):
     cost_so_far = {start: 0}
 
     # Contador para las casillas analizadas
-    step_counter = 1
+    step_counter = 0
     priority_counter = 0  # Para desempatar cuando las prioridades sean iguales
     
     heuristic = manhattan_distance if heuristic_name == 'Manhattan' else euclidean_distance

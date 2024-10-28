@@ -6,7 +6,7 @@ def hill_climbing_search(start, goal, model, heuristic_name):
     current_node = start
     visited = set()
     came_from = {start: None}
-    step_counter = 1
+    step_counter = 0
 
     while True:
         # If current node is adjacent to the goal, return the path

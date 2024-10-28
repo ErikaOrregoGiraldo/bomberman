@@ -11,7 +11,7 @@ def beam_search(start, goal, model, heuristic_name, beam_width):
     
     heuristic = manhattan_distance if heuristic_name == 'Manhattan' else euclidean_distance
 
-    step_counter = 1
+    step_counter = 0
     priority_counter = 0  # Tie-breaker to maintain insertion order for nodes with the same heuristic value
 
     while queue:

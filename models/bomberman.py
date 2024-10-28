@@ -28,8 +28,8 @@ class Bomberman(Agent):
         self.placed_bomb = False  # Rastrea si ya se ha colocado una bomba
         self.waiting_for_explosion = False  # Indica si Bomberman está esperando que la bomba y el fuego desaparezcan
         self.safe_position = None  # Posición segura donde Bomberman esperará
-        self.exit_position = self.find_exit_position() 
-
+        self.exit_position = self.find_exit_position()
+    
     def move(self):
         """Controla los movimientos de Bomberman y gestiona la lógica de colocación de bombas y movimiento seguro."""
         
@@ -49,24 +49,22 @@ class Bomberman(Agent):
             self.follow_return_path()  # Seguir el camino de regreso paso por paso
             return
 
-        exit_position = self.find_exit_position()
-
         # Si la salida está libre, moverse directamente hacia allí
-        if self.exit_found and exit_position and not self.is_block_present(exit_position):
-            self.model.grid.move_agent(self, exit_position)
+        if self.exit_found and self.exit_position and not self.is_block_present(self.exit_position):
+            self.model.grid.move_agent(self, self.exit_position)
             print("¡Bomberman ha alcanzado la salida!")
             self.model.finish_game()
             return
 
         # Colocar una bomba si Bomberman está adyacente a la roca con la salida
-        if exit_position and self.is_adjacent(exit_position) and not self.exit_found:
+        if self.exit_position and self.is_adjacent(self.exit_position) and not self.exit_found:
             self.place_bomb()
             self.exit_found = True
             self.calculate_safe_path()
             return
 
         # Calcular un nuevo camino si es necesario
-        if exit_position and not self.path:
+        if self.exit_position and not self.path:
             self.calculate_path(self.exit_position)
             print(f"Camino encontrado: {self.path}")
 
