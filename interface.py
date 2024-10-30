@@ -9,6 +9,7 @@ from models.fire_marker import FireMarker
 from models.globe import Globe
 from models.metal import Metal
 from models.number_marker import NumberMarker
+from models.power_up import PowerUp
 
 def bomberman_portrayal(agent):
     portrayal = {"Shape": "rect", "Filled": "true", "Layer": 0}
@@ -57,7 +58,11 @@ def bomberman_portrayal(agent):
         portrayal["Shape"] = "images/fire.png"
         portrayal["scale"] = 1
         portrayal["Layer"] = 4  # Capas superiores para el efecto de fuego
-
+    
+    elif isinstance(agent, PowerUp):
+        portrayal["Shape"] = "images/powerup.png"
+        portrayal["scale"] = 1
+        portrayal["Layer"] = 1
     return portrayal
 
 # Crear la cuadrícula de visualización
@@ -67,12 +72,13 @@ def run_interface(width, high, map_file):
     # Dropdown menu to choose the algorithm
     algorithm_choice = Choice("Algoritmo de búsqueda", value="BFS", choices=["BFS", "DFS", "UCS", "A*", "Beam Search", "Hill Climbing"])
     heuristic_choice = Choice("Heurística", value="Euclidean", choices=["Euclidean", "Manhattan"])
+    power_ups = Choice("Número de comodines", value=3, choices=list(range(1, 11)))
 
     server = ModularServer(
         BombermanModel,
         [grid],
         "Bomberman", 
-        {"width": width, "high": high, "map_file": map_file, "algorithm": algorithm_choice, "heuristic": heuristic_choice}
+        {"width": width, "high": high, "map_file": map_file, "algorithm": algorithm_choice, "heuristic": heuristic_choice, "power_ups": power_ups}
     )
-    server.port = 8521
+    server.port = 8520
     server.launch()

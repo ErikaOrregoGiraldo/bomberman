@@ -18,7 +18,7 @@ def depth_first_search(start, goal, model):
         step_counter += 1
 
         # Si estamos en una casilla adyacente a la roca con la salida, terminamos la búsqueda
-        if is_adjacent(current, goal):
+        if current == goal:
             return reconstruct_path(came_from, current)
         
         # Obtener vecinos en el orden ortogonal: arriba, derecha, abajo, izquierda

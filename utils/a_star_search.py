@@ -22,7 +22,7 @@ def a_star_search(start, goal, model, heuristic_name):
         _, _, current_node = heappop(queue)
         
         # Si llegamos a la meta, reconstruimos el camino
-        if is_adjacent(current_node, goal):
+        if current_node == goal:
             return reconstruct_path(came_from, current_node)
         
         # Marcar el nodo como visitado

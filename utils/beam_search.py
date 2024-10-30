@@ -21,7 +21,7 @@ def beam_search(start, goal, model, heuristic_name, beam_width):
 
         for _, _, current_node in current_level:
             # If we reach the goal, reconstruct and return the path
-            if is_adjacent(current_node, goal):
+            if current_node == goal:
                 return reconstruct_path(came_from, current_node)
             
             # Mark the node as visited

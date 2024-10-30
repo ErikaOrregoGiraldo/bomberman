@@ -10,7 +10,7 @@ from models.metal import Metal
 from models.number_marker import NumberMarker
 
 class BombermanModel(Model):
-    def __init__(self, width, high, map_file, algorithm="BFS", heuristic="Euclidean"):
+    def __init__(self, width, high, map_file, algorithm, heuristic, power_ups):
         super().__init__()
         self.grid_width = width
         self.grid_height = high
@@ -20,10 +20,12 @@ class BombermanModel(Model):
         unique_id_counter = 0  
         self.visited_numbers = {}
         globe_positions = []
+        rock_positions = []
         self.previous_positions = {}
         self.map_file = map_file
         self.running = True  # Bandera para controlar la ejecución del juego
-
+        self.power_ups = power_ups
+        
         # Crear el mapa y colocar los agentes correspondientes
         for y, row in enumerate(reversed(map_file)):
             for x, cell in enumerate(row):
@@ -34,10 +36,7 @@ class BombermanModel(Model):
                     self.schedule.add(bomberman)
 
                 elif cell == 'R':
-                    bloque = Block(unique_id_counter, (x, y), self)
-                    unique_id_counter += 1
-                    self.grid.place_agent(bloque, (x, y))
-                    self.schedule.add(bloque)
+                    rock_positions.append((x,y))
 
                 elif cell == "R_s":
                     rock = Block(unique_id_counter, (x, y), self, has_exit=True)
@@ -53,11 +52,20 @@ class BombermanModel(Model):
                 
                 elif cell == "C_g":
                     globe_positions.append((x, y))
-    
+                    
+        power_up_positions = random.sample(rock_positions, min(self.power_ups, len(rock_positions)))
+        
+        for rock_position in rock_positions:
+            has_power_item = rock_position in power_up_positions
+            bloque = Block(unique_id_counter, rock_position, self, has_power_up=has_power_item)
+            unique_id_counter += 1
+            self.grid.place_agent(bloque, rock_position)
+            self.schedule.add(bloque)
+                
         for globe_position in globe_positions:
-                globe = Globe(globe_position, self)
-                self.grid.place_agent(globe, globe_position)
-                self.schedule.add(globe)
+            globe = Globe(globe_position, self)
+            self.grid.place_agent(globe, globe_position)
+            self.schedule.add(globe)
 
         if not globe_positions:
                 self.add_globes(1)
@@ -68,7 +76,7 @@ class BombermanModel(Model):
         print("Juego terminado debido a colisión.")
 
     def place_agent_number(self, pos, number):
-        print(f"Colocando número {number} en la casilla {pos}")
+        print(f"Colocando número {number} en la casilla {pos}") 
         print(f"self.visited_numbers: {self.visited_numbers}")
         # Registrar el número de la casilla en self.visited_numbers
         self.visited_numbers[pos] = number

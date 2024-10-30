@@ -19,7 +19,7 @@ def breadth_first_search(start, goal, model):
         
         step_counter += 1
 
-        if is_adjacent(current, goal):
+        if current == goal:
             return reconstruct_path(came_from, current)
 
         neighbors = get_neighbors_in_orthogonal_order(current, model)

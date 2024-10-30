@@ -11,6 +11,8 @@ from models.block import Block
 from models.metal import Metal
 from models.bomb import Bomb
 from models.fire_marker import FireMarker
+from models.power_up import PowerUp
+from models.number_marker import NumberMarker
 
 class Bomberman(Agent):
     """Un agente que representa al Bomberman en el juego."""
@@ -48,6 +50,19 @@ class Bomberman(Agent):
         if self.return_path:
             self.follow_return_path()  # Seguir el camino de regreso paso por paso
             return
+        
+        rock = self.model.grid.get_cell_list_contents([self.pos])
+        for obj in rock:
+            print(type(obj))
+            if isinstance(obj, PowerUp):
+                self.increase_power()  # Incrementa el poder de la bomba
+                x, y = obj.pos
+                print(x,y)
+                number_marker = NumberMarker((x, y), obj.model, obj.value)
+                self.model.grid.remove_agent(obj)  # Eliminar la roca
+                self.model.grid.place_agent(number_marker, (x, y))  # Colocar el NumberMarker
+                self.model.schedule.add(number_marker)  # Añadir al schedule
+                print("¡Bomberman ha recogido un ítem de poder! El poder de la bomba ha aumentado.")
 
         # Si la salida está libre, moverse directamente hacia allí
         if self.exit_found and self.exit_position and not self.is_block_present(self.exit_position):
@@ -207,6 +222,11 @@ class Bomberman(Agent):
         elif self.algorithm == "Hill Climbing":
             self.path = hill_climbing_search(self.pos, exit_position, self.model, self.heuristic)
         print(f"Camino encontrado: {self.path}")
+    
+    def increase_power(self):
+        """Incrementa el poder de destrucción cuando Bomberman encuentra un comodín."""
+        self.power += 1
+        print(f"Poder de destrucción incrementado a: {self.power}")
 
     def step(self):
         self.move()

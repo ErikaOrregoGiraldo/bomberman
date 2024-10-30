@@ -10,7 +10,7 @@ def hill_climbing_search(start, goal, model, heuristic_name):
 
     while True:
         # If current node is adjacent to the goal, return the path
-        if is_adjacent(current_node, goal):
+        if current_node == goal:
             return reconstruct_path(came_from, current_node)
         
         # Mark the current node as visited

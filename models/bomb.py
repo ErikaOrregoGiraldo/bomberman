@@ -1,5 +1,7 @@
 from mesa import Agent
 from models.metal import Metal
+from models.block import Block
+from models.power_up import PowerUp
 
 class Bomb(Agent):
     def __init__(self, unique_id, pos, model, power):
@@ -33,6 +35,16 @@ class Bomb(Agent):
                 cell_contents = self.model.grid.get_cell_list_contents((x, y))
                 if any(isinstance(obj, Metal) for obj in cell_contents):
                     break
+                
+                for obj in cell_contents:
+                    if isinstance(obj, Block) and obj.has_power_up and obj.pos in self.model.visited_numbers:
+                        power_up = PowerUp(self.model.next_id(), self.model, (x,y), self.model.visited_numbers[obj.pos])
+                        print(f'TIPO {type(obj)}')
+                        self.model.grid.remove_agent(obj)
+                        self.model.grid.place_agent(power_up, (x,y))
+                        self.model.schedule.add(power_up)
+                        break
+                    
 
         print(f"Explosión en {self.pos} afectando a {explosion_positions} posiciones")
         # Crear un marcador de explosión para cada posición afectada
