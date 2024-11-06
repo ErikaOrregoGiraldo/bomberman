@@ -1,5 +1,5 @@
-from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, manhattan_distance, euclidean_distance, is_valid_move
-from heapq import heappush, heappop, nsmallest
+from utils.shared.utils import get_neighbors_in_orthogonal_order, reconstruct_path, manhattan_distance, euclidean_distance, is_valid_move
+from heapq import heappush, nsmallest
 
 def beam_search(start, goal, model, heuristic_name, beam_width):
     # Use a priority queue (heap) to manage nodes, focusing on the top `k` most promising nodes at each depth
@@ -26,6 +26,7 @@ def beam_search(start, goal, model, heuristic_name, beam_width):
             
             # Mark the node as visited
             visited.add(current_node)
+            model.record_state(current_node, heuristic(current_node, goal))
             model.place_agent_number(current_node, step_counter)
             print(f"Casilla {current_node} marcada con el número {step_counter}")  # Console output for visualization
             step_counter += 1

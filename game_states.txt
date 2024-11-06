@@ -1,0 +1,17 @@
+Estados de juego en pre-orden:
+Posición: (3, 4), Heurística: 7
+Posición: (4, 4), Heurística: 6
+Posición: (5, 4), Heurística: 5
+Posición: (4, 3), Heurística: 5
+Posición: (6, 4), Heurística: 4
+Posición: (5, 3), Heurística: 4
+Posición: (4, 2), Heurística: 4
+Posición: (6, 3), Heurística: 3
+Posición: (5, 2), Heurística: 3
+Posición: (4, 1), Heurística: 3
+Posición: (6, 2), Heurística: 2
+Posición: (5, 1), Heurística: 2
+Posición: (4, 0), Heurística: 2
+Posición: (6, 1), Heurística: 1
+Posición: (5, 0), Heurística: 1
+Posición: (6, 0), Heurística: 0

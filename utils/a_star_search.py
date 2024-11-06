@@ -1,6 +1,6 @@
 from heapq import heappush, heappop
 
-from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, manhattan_distance, euclidean_distance, is_valid_move
+from utils.shared.utils import get_neighbors_in_orthogonal_order, reconstruct_path, manhattan_distance, euclidean_distance, is_valid_move
 
 
 def a_star_search(start, goal, model, heuristic_name):
@@ -20,6 +20,8 @@ def a_star_search(start, goal, model, heuristic_name):
     while queue:
         # Atender el nodo con la menor prioridad (costo acumulado + heurística)
         _, _, current_node = heappop(queue)
+        
+        model.record_state(current_node, heuristic(current_node, goal))
         
         # Si llegamos a la meta, reconstruimos el camino
         if current_node == goal:

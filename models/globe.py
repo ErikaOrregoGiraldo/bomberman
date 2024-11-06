@@ -10,6 +10,9 @@ class Globe(Agent):
         self.post = post
 
     def move(self):
+        if self.pos is None:
+            return
+        
         possible_steps = self.model.grid.get_neighborhood(self.pos, moore=False, include_center=False)
         valid_steps = [pos for pos in possible_steps if self.is_valid_estep(pos)]     
         print("Pasos válidos para el globo" , valid_steps)
@@ -17,8 +20,9 @@ class Globe(Agent):
         if valid_steps:
             new_position = random.choice(valid_steps)
             self.model.update_previous_position(self, self.pos)
-            self.model.grid.move_agent(self, new_position)
             self.check_collision(new_position)
+            self.model.grid.move_agent(self, new_position)
+
 
     def is_valid_estep(self, pos):
         cell_contents = self.model.grid.get_cell_list_contents(pos)
@@ -27,16 +31,24 @@ class Globe(Agent):
     
     def check_collision(self, new_position):
         bomberman = next(agent for agent in self.model.schedule.agents if isinstance(agent, Bomberman))
-        ballon = next(agent for agent in self.model.schedule.agents if isinstance(agent, Globe))
 
-        if new_position == bomberman.pos or bomberman.pos == ballon.pos:
-            print("¡Colisión detectada! Perdiste")
-            self.model.finish_game()  
-        
-        if (self.model.previous_positions.get(bomberman) == new_position and
-              self.model.previous_positions.get(self) == bomberman.pos):
-            print("¡Colisión por intercambio de posiciones! Perdiste")
+        # Verificar colisión directa con Bomberman
+        if new_position == bomberman.pos:
+            print("Colisión directa entre globo y Bomberman.")
             self.model.finish_game()
+            return
+        
+        # Verificar intercambio de posiciones con Bomberman (colisión alternada)
+        for balloon in self.model.schedule.agents:
+            if isinstance(balloon, Globe):
+                if (self.model.previous_positions.get(bomberman) == new_position and
+                    self.model.previous_positions.get(balloon) == bomberman.pos):
+                    print("Colisión alternada entre globo y Bomberman.")
+                    self.model.finish_game()
+                    return
 
     def step(self):
-        self.move()
+        self.model.update_previous_position(self, self.pos)
+        self.move()  
+        
+        

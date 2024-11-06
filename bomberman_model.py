@@ -19,12 +19,17 @@ class BombermanModel(Model):
         self.algorithm = algorithm
         unique_id_counter = 0  
         self.visited_numbers = {}
-        globe_positions = []
-        rock_positions = []
         self.previous_positions = {}
         self.map_file = map_file
         self.running = True  # Bandera para controlar la ejecución del juego
         self.power_ups = power_ups
+        self.export_file = "game_states.txt"
+        
+        with open(self.export_file, "w") as f:
+            f.write("Estados de juego en pre-orden:\n")
+        
+        globe_positions = []
+        rock_positions = []
         
         # Crear el mapa y colocar los agentes correspondientes
         for y, row in enumerate(reversed(map_file)):
@@ -69,6 +74,20 @@ class BombermanModel(Model):
 
         if not globe_positions:
                 self.add_globes(1)
+                
+    def record_state(self, position, heuristic_value=None):
+        """
+        Registra el estado en un archivo de texto en preorden.
+        
+        Args:
+            position (tuple): La posición actual de Bomberman.
+            heuristic_value (float, optional): Valor de la heurística (solo para algoritmos informados).
+        """
+        with open(self.export_file, "a", encoding="utf-8") as f:
+            if heuristic_value is not None:
+                f.write(f"Posición: {position}, Heurística: {heuristic_value}\n")
+            else:
+                f.write(f"Posición: {position}\n")
 
     def finish_game(self):
         """Detiene la ejecución del juego."""

@@ -1,4 +1,4 @@
-from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, manhattan_distance, euclidean_distance, is_valid_move
+from utils.shared.utils import get_neighbors_in_orthogonal_order, reconstruct_path, manhattan_distance, euclidean_distance, is_valid_move
 
 
 def hill_climbing_search(start, goal, model, heuristic_name):
@@ -15,6 +15,7 @@ def hill_climbing_search(start, goal, model, heuristic_name):
         
         # Mark the current node as visited
         visited.add(current_node)
+        model.record_state(current_node, heuristic(current_node, goal))
         model.place_agent_number(current_node, step_counter)
         print(f"Casilla {current_node} marcada con el número {step_counter}")
         step_counter += 1

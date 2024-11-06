@@ -89,6 +89,7 @@ class Bomberman(Agent):
             self.calculate_safe_path()
         else:
             self.follow_path()  # Moverse si no hay bloque en el camino
+        self.model.update_previous_position
 
     def is_explosion_over(self):
         """Verifica si todos los agentes bomba y fuego han sido eliminados del modelo."""
@@ -229,4 +230,5 @@ class Bomberman(Agent):
         print(f"Poder de destrucción incrementado a: {self.power}")
 
     def step(self):
+        self.model.update_previous_position(self, self.pos)
         self.move()
