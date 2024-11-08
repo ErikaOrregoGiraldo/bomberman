@@ -39,7 +39,7 @@ class Bomb(Agent):
                 for obj in cell_contents:
                     if isinstance(obj, Block) and obj.has_power_up and obj.pos in self.model.visited_numbers:
                         power_up = PowerUp(self.model.next_id(), self.model, (x,y), self.model.visited_numbers[obj.pos])
-                        print(f'TIPO {type(obj)}')
+                        #print(f'TIPO {type(obj)}')
                         self.model.grid.remove_agent(obj)
                         self.model.grid.place_agent(power_up, (x,y))
                         self.model.schedule.add(power_up)

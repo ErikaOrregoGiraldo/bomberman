@@ -53,7 +53,7 @@ class Bomberman(Agent):
         
         rock = self.model.grid.get_cell_list_contents([self.pos])
         for obj in rock:
-            print(type(obj))
+            #print(type(obj))
             if isinstance(obj, PowerUp):
                 self.increase_power()  # Incrementa el poder de la bomba
                 x, y = obj.pos

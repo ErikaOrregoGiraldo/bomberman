@@ -10,6 +10,7 @@ def a_star_search(start, goal, model, heuristic_name):
     visited = set()
     came_from = {start: None}
     cost_so_far = {start: 0}
+    cost_of_nodes = {}
 
     # Contador para las casillas analizadas
     step_counter = 0
@@ -44,7 +45,13 @@ def a_star_search(start, goal, model, heuristic_name):
                     cost_so_far[neighbor] = new_cost
                     priority_counter += 1  # Desempatar
                     priority = new_cost + heuristic(neighbor, goal)  # f(n) = g(n) + h(n)
+                    if priority not in cost_of_nodes.keys():
+                        cost_of_nodes[priority] = [neighbor]
+                    else:
+                        cost_of_nodes[priority].append(neighbor)
                     heappush(queue, (priority, priority_counter, neighbor))
                     came_from[neighbor] = current_node
-
+        for key, value in cost_of_nodes.items():
+            print(f'Costo {key}, Nodos: {value}, Total: {len(value)}')
     return None  # Si no se encuentra un camino
+   
