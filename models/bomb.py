@@ -10,6 +10,7 @@ class Bomb(Agent):
         self.timer = power + 2  # Tiempo hasta la explosión
         self.power = power
         self.exploded = False  # Para controlar si la bomba ha explotado
+        self.maximizer_player = False
 
     def step(self):
         # Reducir el temporizador en cada paso

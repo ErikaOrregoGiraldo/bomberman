@@ -1,5 +1,5 @@
 from collections import deque
-from utils.shared.utils import get_neighbors_in_orthogonal_order, is_adjacent, reconstruct_path, is_valid_move
+from utils.shared.utils import get_neighbors_in_orthogonal_order, reconstruct_path, is_valid_move
 from models.block import Block
 from models.metal import Metal
 

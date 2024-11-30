@@ -6,6 +6,7 @@ from utils.uniform_cost_search import uniform_cost_search
 from utils.a_star_search import a_star_search
 from utils.beam_search import beam_search
 from utils.hill_climbing_search import hill_climbing_search
+from utils.poda_alpha_beta import poda_alpha_beta_search
 from utils.shared.utils import get_neighbors_in_orthogonal_order
 from models.block import Block
 from models.metal import Metal
@@ -31,6 +32,7 @@ class Bomberman(Agent):
         self.waiting_for_explosion = False  # Indica si Bomberman está esperando que la bomba y el fuego desaparezcan
         self.safe_position = None  # Posición segura donde Bomberman esperará
         self.exit_position = self.find_exit_position()
+        self.maximizer_player = True
     
     def move(self):
         """Controla los movimientos de Bomberman y gestiona la lógica de colocación de bombas y movimiento seguro."""
@@ -177,9 +179,13 @@ class Bomberman(Agent):
     def is_block_in_the_way(self):
         """Verifica si el siguiente paso está bloqueado por un bloque."""
         if self.path:
+            # Asegurarse de que el siguiente paso es una tupla (x, y), no un entero
             next_pos = self.path[0]
-            cell_contents = self.model.grid.get_cell_list_contents(next_pos)
-            return any(isinstance(obj, Block) for obj in cell_contents)
+            if isinstance(next_pos, tuple):  # Verificamos que sea una tupla
+                cell_contents = self.model.grid.get_cell_list_contents(next_pos)
+                return any(isinstance(obj, Block) for obj in cell_contents)
+            else:
+                print(f"Error: El valor en path no es una tupla válida, es: {next_pos}")
         return False
 
     def place_bomb(self):
@@ -222,6 +228,8 @@ class Bomberman(Agent):
             self.path = beam_search(self.pos, exit_position, self.model, self.heuristic, 2)
         elif self.algorithm == "Hill Climbing":
             self.path = hill_climbing_search(self.pos, exit_position, self.model, self.heuristic)
+        elif self.algorithm == "Poda Alpha Beta":
+            self.path = poda_alpha_beta_search(self.pos, exit_position, self.model, 3, float("-inf"), float("inf"), self.maximizer_player)
         print(f"Camino encontrado: {self.path}")
     
     def increase_power(self):
