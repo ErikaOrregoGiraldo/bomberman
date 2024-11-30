@@ -8,6 +8,7 @@ class Globe(Agent):
     def __init__(self, post, model) :
         super().__init__(post, model)
         self.post = post
+        self.path = []
 
     def move(self):
         if self.pos is None:

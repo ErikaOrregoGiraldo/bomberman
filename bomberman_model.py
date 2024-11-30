@@ -69,6 +69,7 @@ class BombermanModel(Model):
                 
         for globe_position in globe_positions:
             globe = Globe(globe_position, self)
+            print(f"globe{globe.unique_id}")
             self.grid.place_agent(globe, globe_position)
             self.schedule.add(globe)
 
