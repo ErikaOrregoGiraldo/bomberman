@@ -1,41 +1,53 @@
+import random
 from mesa import Agent
 from models.bomberman import Bomberman
 from models.number_marker import NumberMarker
 from utils.poda_alpha_beta import poda_alpha_beta_search
-
 class Globe(Agent):
-    def __init__(self, pos, model):
+    def __init__(self, pos, model, use_alpha_beta=True):
         super().__init__(pos, model)
         self.pos = pos
+        self.use_alpha_beta = use_alpha_beta  # Bandera para usar poda alfa-beta
 
     def move(self):
         if self.pos is None:
             return
-        
-        # Obtener la posición de Bomberman como objetivo
-        bomberman = next(agent for agent in self.model.schedule.agents if isinstance(agent, Bomberman))
-        goal = bomberman.pos
 
-        # Calcular el mejor movimiento usando poda alfa-beta
-        depth = 3  # Profundidad máxima de búsqueda
-        alpha = float('-inf')
-        beta = float('inf')
+        if self.use_alpha_beta:
+            # Usar poda alfa-beta para decidir el movimiento
+            bomberman = next(agent for agent in self.model.schedule.agents if isinstance(agent, Bomberman))
+            goal = bomberman.pos
 
-        path = poda_alpha_beta_search(
-            start=self.pos, 
-            goal=goal, 
-            model=self.model, 
-            depth=depth, 
-            alpha=alpha, 
-            beta=beta, 
-            maximizer_player=False  # El globo es el jugador minimizador
-        )
+            depth = 3  # Profundidad máxima de búsqueda
+            alpha = float('-inf')
+            beta = float('inf')
 
-        if len(path) > 1:
-            new_position = path[1]  # El siguiente paso en el camino
-            self.model.update_previous_position(self, self.pos)
-            self.check_collision(new_position)
-            self.model.grid.move_agent(self, new_position)
+            path = poda_alpha_beta_search(
+                start=self.pos,
+                goal=goal,
+                model=self.model,
+                depth=depth,
+                alpha=alpha,
+                beta=beta,
+                maximizer_player=False  # El globo es el jugador minimizador
+            )
+
+            if len(path) > 1:
+                new_position = path[1]  # El siguiente paso en el camino
+                self.model.update_previous_position(self, self.pos)
+                self.check_collision(new_position)
+                self.model.grid.move_agent(self, new_position)
+        else:
+            # Movimiento aleatorio como antes
+            possible_steps = self.model.grid.get_neighborhood(self.pos, moore=False, include_center=False)
+            valid_steps = [pos for pos in possible_steps if self.is_valid_step(pos)]
+            print("Pasos válidos para el globo", valid_steps)
+
+            if valid_steps:
+                new_position = random.choice(valid_steps)
+                self.model.update_previous_position(self, self.pos)
+                self.check_collision(new_position)
+                self.model.grid.move_agent(self, new_position)
 
     def is_valid_step(self, pos):
         cell_contents = self.model.grid.get_cell_list_contents(pos)

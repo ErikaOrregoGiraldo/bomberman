@@ -36,7 +36,27 @@ class Bomberman(Agent):
     
     def move(self):
         """Controla los movimientos de Bomberman y gestiona la lógica de colocación de bombas y movimiento seguro."""
-        
+
+        if self.algorithm == "Poda Alpha Beta":
+            # Usar poda alfa-beta para calcular el próximo movimiento
+            next_step = poda_alpha_beta_search(
+                self.pos, 
+                self.exit_position, 
+                self.model, 
+                depth=3, 
+                alpha=float("-inf"), 
+                beta=float("inf"), 
+                maximizer_player=self.maximizer_player
+            )
+            if next_step:
+                # Mover a Bomberman al próximo paso calculado
+                self.model.grid.move_agent(self, next_step[0])
+                print(f"Bomberman se movió a {next_step[0]} usando poda alfa-beta.")
+                return
+            else:
+                print("Poda alfa-beta no encontró un movimiento válido; Bomberman permanece en su lugar.")
+                
+            
         # Si está esperando en la posición segura, verifica si la explosión ha terminado
         if self.waiting_for_explosion:
             if self.is_explosion_over():
@@ -215,7 +235,7 @@ class Bomberman(Agent):
         return abs(px - x) > self.power or abs(py - y) > self.power
 
     def calculate_path(self, exit_position):
-        # Cálculo del camino según el algoritmo seleccionado
+        """Calcula el camino hacia la salida según el algoritmo seleccionado."""
         if self.algorithm == "BFS":
             self.path = breadth_first_search(self.pos, exit_position, self.model)
         elif self.algorithm == "DFS":
@@ -230,7 +250,11 @@ class Bomberman(Agent):
             self.path = hill_climbing_search(self.pos, exit_position, self.model, self.heuristic)
         elif self.algorithm == "Poda Alpha Beta":
             self.path = poda_alpha_beta_search(self.pos, exit_position, self.model, 3, float("-inf"), float("inf"), self.maximizer_player)
+            # Si poda alfa-beta encuentra un movimiento inmediato, guardar solo el próximo paso
+            if self.path:
+                self.path = [self.path[0]]  # Solo guardar el próximo paso
         print(f"Camino encontrado: {self.path}")
+
     
     def increase_power(self):
         """Incrementa el poder de destrucción cuando Bomberman encuentra un comodín."""

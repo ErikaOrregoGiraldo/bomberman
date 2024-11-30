@@ -83,6 +83,17 @@ class BombermanModel(Model):
         self.update_previous_position(self, self.bomberman.pos)
         if self.running:
             self.schedule.step()
+    
+    def place_agent_number(self, pos, number):
+        """
+            Marca una casilla en el mapa con un número que representa el orden en que fue visitada.
+
+            Args:
+                pos (tuple): La posición en la grilla.
+                number (int): El número que representa el orden de la visita.
+        """
+        self.visited_numbers[pos] = number
+        self.grid.place_agent(NumberMarker(pos, self, number), pos)
 
     def finish_game(self):
         self.running = False
