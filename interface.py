@@ -70,7 +70,7 @@ def run_interface(width, high, map_file):
     grid = CanvasGrid(bomberman_portrayal, width, high, width * 70, high * 70)
 
     # Dropdown menu to choose the algorithm
-    algorithm_choice = Choice("Algoritmo de búsqueda", value="BFS", choices=["BFS", "DFS", "UCS", "A*", "Beam Search", "Hill Climbing"])
+    algorithm_choice = Choice("Algoritmo de búsqueda", value="BFS", choices=["BFS", "DFS", "UCS", "A*", "Beam Search", "Hill Climbing", "Poda Alpha Beta"])
     heuristic_choice = Choice("Heurística", value="Euclidean", choices=["Euclidean", "Manhattan"])
     power_ups = Choice("Número de comodines", value=3, choices=list(range(1, 11)))
 
