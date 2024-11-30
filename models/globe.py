@@ -32,6 +32,8 @@ class Globe(Agent):
                 maximizer_player=False  # El globo es el jugador minimizador
             )
 
+            print(f"Camino encontrado por el globo: {path}")
+
             if len(path) > 1:
                 new_position = path[1]  # El siguiente paso en el camino
                 self.model.update_previous_position(self, self.pos)
