@@ -21,6 +21,7 @@ class Globe(Agent):
             goal = bomberman.pos
 
             # Calcular el mejor movimiento usando poda alfa-beta
+            visited = set()
             depth = 3  # Profundidad máxima de búsqueda
             alpha = float('-inf')
             beta = float('inf')
@@ -32,28 +33,32 @@ class Globe(Agent):
                 depth=depth, 
                 alpha=alpha, 
                 beta=beta, 
-                is_maximizing=False  # El globo es el jugador minimizador
+                is_maximizing=False,  # El globo es el jugador minimizador
+                visited=visited
             )
 
+            print(f"Camino encontrado para globo usando poda alfa-beta: {path}")
+
             if len(path) > 1:
+                print(f"Movimiento del globo desde {self.pos} usando poda alfa-beta a {path[1]}. Objetivo en {goal}.")
+
                 new_position = path[1]  # El siguiente paso en el camino
                 self.model.update_previous_position(self, self.pos)
                 self.check_collision(new_position)
                 self.model.grid.move_agent(self, new_position)
             return
 
-    
-        # Movimiento aleatorio como antes
-        print("Movimiento aleatorio del globo.")
-        possible_steps = self.model.grid.get_neighborhood(self.pos, moore=False, include_center=False)
-        valid_steps = [pos for pos in possible_steps if self.is_valid_step(pos)]
-        print("Pasos válidos para el globo", valid_steps)
+        else:
+            print("Movimiento aleatorio del globo.")
+            possible_steps = self.model.grid.get_neighborhood(self.pos, moore=False, include_center=False)
+            valid_steps = [pos for pos in possible_steps if self.is_valid_step(pos)]
+            print("Pasos válidos para el globo", valid_steps)
 
-        if valid_steps:
-            new_position = random.choice(valid_steps)
-            self.model.update_previous_position(self, self.pos)
-            self.check_collision(new_position)
-            self.model.grid.move_agent(self, new_position)
+            if valid_steps:
+                new_position = random.choice(valid_steps)
+                self.model.update_previous_position(self, self.pos)
+                self.check_collision(new_position)
+                self.model.grid.move_agent(self, new_position)
 
     def is_valid_step(self, pos):
         from models.bomberman import Bomberman

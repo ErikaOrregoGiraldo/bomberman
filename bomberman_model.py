@@ -80,9 +80,8 @@ class BombermanModel(Model):
             self.add_globes(1)
 
     def step(self):
-        # Avanzar en el tiempo solo si el juego está activo
-        self.update_previous_position(self, self.bomberman.pos)
         if self.running:
+            self.update_previous_position(self.bomberman, self.bomberman.pos)
             self.schedule.step()
     
     def place_agent_number(self, pos, number):
@@ -112,5 +111,28 @@ class BombermanModel(Model):
                     break
 
     def update_previous_position(self, agent, new_position):
-        self.previous_positions[agent] = new_position
+        """
+        Actualiza la última posición registrada del agente solo si ha cambiado.
+
+        Args:
+            agent: El agente cuya posición se actualiza.
+            new_position: La nueva posición del agente.
+        """
+        if agent not in self.previous_positions or self.previous_positions[agent] != new_position:
+            self.previous_positions[agent] = new_position
+
+
+    def record_state(self, position, heuristic_value=None):
+        """
+        Registra el estado en un archivo de texto en preorden.
+        
+        Args:
+            position (tuple): La posición actual de Bomberman.
+            heuristic_value (float, optional): Valor de la heurística (solo para algoritmos informados).
+        """
+        with open(self.export_file, "a", encoding="utf-8") as f:
+            if heuristic_value is not None:
+                f.write(f"Posición: {position}, Heurística: {heuristic_value}\n")
+            else:
+                f.write(f"Posición: {position}\n")
 

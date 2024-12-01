@@ -93,6 +93,32 @@ class Bomberman(Agent):
             self.follow_path()  # Moverse si no hay bloque en el camino
         self.model.update_previous_position
 
+        if self.algorithm == "Poda Alpha Beta":
+            # Calcular el mejor movimiento usando poda alfa-beta
+            depth = 3  # Profundidad máxima de búsqueda
+            visited = set()  # Inicializar el conjunto de posiciones visitadas
+            alpha = float('-inf')
+            beta = float('inf')
+
+            path = poda_alpha_beta_search(
+                start=self.pos, 
+                goal=self.exit_position, 
+                model=self.model, 
+                depth=depth, 
+                alpha=alpha, 
+                beta=beta, 
+                is_maximizing=True,
+                visited=visited # El globo es el jugador minimizador
+            )
+            print(f"Camino encontrado para bomberman usando poda alfa-beta: {path}")
+            if len(path) > 1:
+                print(f"Movimiento de bomberman desde {self.pos} usando poda alfa-beta a {path[1]}. Objetivo en {self.exit_position}.")
+
+                new_position = path[1]  # El siguiente paso en el camino
+                self.model.update_previous_position(self, self.pos)
+                self.model.grid.move_agent(self, new_position)
+            return
+
     def is_explosion_over(self):
         """Verifica si todos los agentes bomba y fuego han sido eliminados del modelo."""
         for agent in self.model.schedule.agents:
@@ -216,6 +242,7 @@ class Bomberman(Agent):
 
     def calculate_path(self, exit_position):
         # Cálculo del camino según el algoritmo seleccionado
+        visited = set()
         if self.algorithm == "BFS":
             self.path = breadth_first_search(self.pos, exit_position, self.model)
         elif self.algorithm == "DFS":
@@ -229,7 +256,7 @@ class Bomberman(Agent):
         elif self.algorithm == "Hill Climbing":
             self.path = hill_climbing_search(self.pos, exit_position, self.model, self.heuristic)
         elif self.algorithm == "Poda Alpha Beta":
-            self.path = poda_alpha_beta_search(self.pos, exit_position, self.model, 3, float("-inf"), float("inf"), self.maximizer_player)
+            self.path = poda_alpha_beta_search(self.pos, exit_position, self.model, 3, float("-inf"), float("inf"), self.maximizer_player, visited=visited)
         print(f"Camino encontrado: {self.path}")
     
     def increase_power(self):
@@ -240,3 +267,23 @@ class Bomberman(Agent):
     def step(self):
         self.model.update_previous_position(self, self.pos)
         self.move()
+    
+    
+    def check_collision(self, new_position):
+        from models.globe import Globe
+        globe = next(agent for agent in self.model.schedule.agents if isinstance(agent, Globe))
+
+        # Verificar colisión directa con Bomberman
+        if new_position == globe.pos:
+            print("Colisión directa entre globo y Bomberman.")
+            self.model.finish_game()
+            return
+
+        # Verificar intercambio de posiciones con Bomberman (colisión alternada)
+        for bomberman in self.model.schedule.agents:
+            if isinstance(bomberman, Bomberman):
+                if (self.model.previous_positions.get(globe) == new_position and
+                    self.model.previous_positions.get(bomberman) == globe.pos):
+                    print("Colisión alternada entre globo y Bomberman.")
+                    self.model.finish_game()
+                    return
