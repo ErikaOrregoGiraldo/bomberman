@@ -1,5 +1,7 @@
 import random
 from mesa import Agent
+import random
+
 from models.bomberman import Bomberman
 from models.number_marker import NumberMarker
 from utils.poda_alpha_beta import poda_alpha_beta_search
@@ -84,4 +86,6 @@ class Globe(Agent):
 
     def step(self):
         self.model.update_previous_position(self, self.pos)
-        self.move()
+        self.move()  
+        
+        

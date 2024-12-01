@@ -1,6 +1,6 @@
 from models.block import Block
 from models.metal import Metal
-from utils.shared.utils import get_neighbors_in_orthogonal_order, manhattan_distance, is_valid_move
+from utils.shared.utils import get_neighbors_in_orthogonal_order, manhattan_distance
 
 def poda_alpha_beta_search(start, goal, model, depth, alpha, beta, maximizer_player):
     """Implementación del algoritmo de poda alfa-beta para el juego Bomberman."""
@@ -75,30 +75,3 @@ def generar_posibles_movimientos(position, model):
     
     print(f"Posibles movimientos desde {position}: {movimientos_validos}")
     return movimientos_validos
-
-def heuristic_evaluation(position, goal, model):
-    """
-    Evaluate the desirability of the given game state.
-    """
-    from models.globe import Globe
-    # Calculate Manhattan distance between Bomberman and the goal
-    distance_to_goal = manhattan_distance(position, goal)
-    
-    # Penalize if Bomberman is surrounded or has fewer moves available
-    bomberman_neighbors = model.grid.get_neighborhood(position, moore=False, include_center=False)
-    valid_bomberman_moves = [
-        pos for pos in bomberman_neighbors if is_valid_move(pos, model)
-    ]
-    mobility_penalty = -len(valid_bomberman_moves)
-    
-    # Calculate the impact of Globe agents
-    globe_penalty = 0
-    for globe in model.schedule.agents:
-        if isinstance(globe, Globe):
-            distance_to_bomberman = manhattan_distance(globe.pos, position)
-            globe_penalty += max(0, 5 - distance_to_bomberman)  # Closer globes increase penalty
-    
-    # Combine heuristic components
-    score = -distance_to_goal + mobility_penalty - globe_penalty
-    
-    return score
