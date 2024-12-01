@@ -47,6 +47,13 @@ def is_valid_move(pos, model):
     cell_contents = model.grid.get_cell_list_contents(pos)
     for obj in cell_contents:
         if isinstance(obj, Metal):
-            return False 
-    
+            return False
+    return True  
+
+def is_valid_move_for_globe(pos, model):
+    from models.globe import Globe
+    cell_contents = model.grid.get_cell_list_contents(pos)
+    for obj in cell_contents:
+        if isinstance(obj, Metal) or isinstance(obj, Block) or isinstance(obj, Globe):
+            return False
     return True  
