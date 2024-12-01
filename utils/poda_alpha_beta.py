@@ -2,7 +2,7 @@ from models.block import Block
 from models.metal import Metal
 from utils.shared.utils import get_neighbors_in_orthogonal_order, manhattan_distance
 
-def poda_alpha_beta_search(start, goal, model, depth, alpha, beta, maximizer_player):
+def poda_alpha_beta_search(start, goal, model, depth, alpha, beta, is_maximizing):
     """Implementación del algoritmo de poda alfa-beta para el juego Bomberman."""
     
     # Agregar depuración
@@ -18,12 +18,12 @@ def poda_alpha_beta_search(start, goal, model, depth, alpha, beta, maximizer_pla
     # Generar los posibles movimientos (acciones)
     posibles_movimientos = generar_posibles_movimientos(start, model)
     
-    if maximizer_player:  # Si es Bomberman (jugador maximizador)
+    if is_maximizing:  # Si es Bomberman (jugador maximizador)
         max_eval = float('-inf')
         best_move = None  # Para guardar el mejor movimiento
         for movimiento in posibles_movimientos:
             path = poda_alpha_beta_search(movimiento, goal, model, depth - 1, alpha, beta, False)
-            eval = heuristica(movimiento, model, maximizer_player)  # Usar heurística para evaluar el movimiento
+            eval = heuristica(movimiento, model, is_maximizing)  # Usar heurística para evaluar el movimiento
             if eval > max_eval:
                 max_eval = eval
                 best_move = path  # Guardar el camino correspondiente
@@ -37,7 +37,7 @@ def poda_alpha_beta_search(start, goal, model, depth, alpha, beta, maximizer_pla
         best_move = None  # Para guardar el mejor movimiento
         for movimiento in posibles_movimientos:
             path = poda_alpha_beta_search(movimiento, goal, model, depth - 1, alpha, beta, True)
-            eval = heuristica(movimiento, model, maximizer_player)  # Usar heurística para evaluar el movimiento
+            eval = heuristica(movimiento, model, is_maximizing)  # Usar heurística para evaluar el movimiento
             if eval < min_eval:
                 min_eval = eval
                 best_move = path  # Guardar el camino correspondiente
@@ -47,10 +47,10 @@ def poda_alpha_beta_search(start, goal, model, depth, alpha, beta, maximizer_pla
         return [start] + best_move if best_move else []  # Retorna el camino que lleva a la mejor jugada
 
 
-def heuristica(position, model, maximizer_player):
+def heuristica(position, model, is_maximizing):
     """Calcula la heurística de la posición actual."""
     # Ejemplo de heurística: la distancia de Manhattan a la meta (y la prioridad de seguridad si es maximizador)
-    if maximizer_player:
+    if is_maximizing:
         print(f"Posición: {position}: Heuristica: {[ manhattan_distance(position, model.exit_position)]}" )
         return manhattan_distance(position, model.exit_position)  # Para Bomberman, la distancia a la salida
     else:

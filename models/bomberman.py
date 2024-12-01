@@ -7,7 +7,6 @@ from utils.a_star_search import a_star_search
 from utils.beam_search import beam_search
 from utils.hill_climbing_search import hill_climbing_search
 from utils.poda_alpha_beta import poda_alpha_beta_search
-from utils.alpha_beta_pruning import alpha_beta_search
 from utils.shared.utils import get_neighbors_in_orthogonal_order
 from models.block import Block
 from models.metal import Metal
@@ -37,27 +36,7 @@ class Bomberman(Agent):
     
     def move(self):
         """Controla los movimientos de Bomberman y gestiona la lógica de colocación de bombas y movimiento seguro."""
-
-        if self.algorithm == "Poda Alpha Beta":
-            # Usar poda alfa-beta para calcular el próximo movimiento
-            _, next_step = alpha_beta_search(
-                self.pos, 
-                self.exit_position, 
-                self.model, 
-                depth=3, 
-                alpha=float("-inf"), 
-                beta=float("inf"), 
-                maximizing_player=self.maximizer_player
-            )
-            if next_step:
-                # Mover a Bomberman al próximo paso calculado
-                self.model.grid.move_agent(self, next_step)
-                print(f"Bomberman se movió a {next_step} usando poda alfa-beta.")
-                return
-            else:
-                print("Poda alfa-beta no encontró un movimiento válido; Bomberman permanece en su lugar.")
-                
-            
+        
         # Si está esperando en la posición segura, verifica si la explosión ha terminado
         if self.waiting_for_explosion:
             if self.is_explosion_over():
@@ -236,7 +215,7 @@ class Bomberman(Agent):
         return abs(px - x) > self.power or abs(py - y) > self.power
 
     def calculate_path(self, exit_position):
-        """Calcula el camino hacia la salida según el algoritmo seleccionado."""
+        # Cálculo del camino según el algoritmo seleccionado
         if self.algorithm == "BFS":
             self.path = breadth_first_search(self.pos, exit_position, self.model)
         elif self.algorithm == "DFS":
@@ -250,13 +229,8 @@ class Bomberman(Agent):
         elif self.algorithm == "Hill Climbing":
             self.path = hill_climbing_search(self.pos, exit_position, self.model, self.heuristic)
         elif self.algorithm == "Poda Alpha Beta":
-            _, self.path = alpha_beta_search(self.pos, exit_position, self.model, 3, float("-inf"), float("inf"), self.maximizer_player)
-            #self.path = poda_alpha_beta_search(self.pos, exit_position, self.model, 3, float("-inf"), float("inf"), self.maximizer_player)
-            # Si poda alfa-beta encuentra un movimiento inmediato, guardar solo el próximo paso
-            if self.path:
-                self.path = [self.path[0]]  # Solo guardar el próximo paso
+            self.path = poda_alpha_beta_search(self.pos, exit_position, self.model, 3, float("-inf"), float("inf"), self.maximizer_player)
         print(f"Camino encontrado: {self.path}")
-
     
     def increase_power(self):
         """Incrementa el poder de destrucción cuando Bomberman encuentra un comodín."""
