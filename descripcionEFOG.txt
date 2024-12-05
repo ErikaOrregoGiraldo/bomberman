@@ -1,0 +1,8 @@
+Cuantos nodos fueron podados en total: 
+
+    Si el algoritmo funcionara correctamente, lo que se debia realizar era 
+    agregar una nueva variable llamada nodos e inicializarla en 0, y esta decbía incrementar en
+    1 cada vez que entrará por la codicion beta <= alpha, ya que cada que entra por acá realiza poda 
+
+    Sin embargo, no se logró una correcta implementación del algoritmo, por ende este nunca entraba 
+    a esa condición. 

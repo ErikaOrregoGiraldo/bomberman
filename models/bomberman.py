@@ -110,10 +110,7 @@ class Bomberman(Agent):
                 is_maximizing=True,
                 visited=visited # El globo es el jugador minimizador
             )
-            print(f"Camino encontrado para bomberman usando poda alfa-beta: {path}")
             if len(path) > 1:
-                print(f"Movimiento de bomberman desde {self.pos} usando poda alfa-beta a {path[1]}. Objetivo en {self.exit_position}.")
-
                 new_position = path[1]  # El siguiente paso en el camino
                 self.model.update_previous_position(self, self.pos)
                 self.model.grid.move_agent(self, new_position)

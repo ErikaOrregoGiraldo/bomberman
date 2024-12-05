@@ -32,6 +32,7 @@ def poda_alpha_beta_search(start, goal, model, depth, alpha, beta, is_maximizing
 
             alpha = max(alpha, eval)
             if beta <= alpha:
+                print("Poda beta")
                 break  # Poda beta
 
         return best_path
@@ -56,6 +57,7 @@ def poda_alpha_beta_search(start, goal, model, depth, alpha, beta, is_maximizing
 
             beta = min(beta, eval)
             if beta <= alpha:
+                print("Poda alfa")
                 break  # Poda alpha
 
         return best_path

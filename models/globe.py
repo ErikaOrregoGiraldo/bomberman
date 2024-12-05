@@ -37,10 +37,8 @@ class Globe(Agent):
                 visited=visited
             )
 
-            print(f"Camino encontrado para globo usando poda alfa-beta: {path}")
 
             if len(path) > 1:
-                print(f"Movimiento del globo desde {self.pos} usando poda alfa-beta a {path[1]}. Objetivo en {goal}.")
 
                 new_position = path[1]  # El siguiente paso en el camino
                 self.model.update_previous_position(self, self.pos)
